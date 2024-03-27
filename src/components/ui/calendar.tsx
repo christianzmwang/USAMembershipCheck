@@ -34,23 +34,18 @@ function Calendar({
         table: "w-full border-collapse space-y-1",
         head_row: "flex",
         head_cell:
-          "text-muted-foreground rounded-md w-12 font-normal text-[0.8rem]",
-        row: "flex w-full mt-2",
-        cell: cn(
-          "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md",
-          props.mode === "range"
-            ? "[&:has(>.day-range-end)]:rounded-r-md [&:has(>.day-range-start)]:rounded-l-md first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md"
-            : "[&:has([aria-selected])]:rounded-md"
-        ),
+          "text-muted-foreground rounded-md w-14 font-normal text-[0.8rem]",
+        row: "flex w-full mt-1",
+        cell: "text-center text-sm p-0 relative w-14",
         day: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-8 w-8 p-0 font-normal aria-selected:opacity-100 bg-slate-200 text-black"
+          "h-10 w-[54px] p-0 font-normal aria-selected:opacity-100 bg-slate-200 text-black hover:border hover:border-primary"
         ),
         day_range_start: "day-range-start",
         day_range_end: "day-range-end",
         day_selected:
           "!bg-primary !text-primary-foreground ",
-        day_today: "ring-2 ring-offset-2 ring-slate-500",
+        day_today: "border border-primary",
         day_outside:
           "day-outside text-muted-foreground opacity-50  aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
         day_disabled: "text-muted-foreground opacity-50 !bg-white",
@@ -62,6 +57,9 @@ function Calendar({
       components={{
         IconLeft: ({ ...props }) => <ChevronLeftIcon className="h-4 w-4" />,
         IconRight: ({ ...props }) => <ChevronRightIcon className="h-4 w-4" />,
+        DayContent: ({ date }) => {
+          return <span>{date.getDate()}</span>
+        },
       }}
       {...props}
     />

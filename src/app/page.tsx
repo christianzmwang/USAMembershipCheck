@@ -11,7 +11,7 @@ export default function v() {
     <main className="flex h-full main" >
 
       <div style={{height: "auto"}}
-        className="main-grid [--booker-timeslots-width:240px] lg:[--booker-timeslots-width:280px] [--booker-meta-width:240px] [--booker-main-width:480px] lg:[--booker-meta-width:280px] bg-default dark:bg-muted grid max-w-full items-start dark:[color-scheme:dark] sm:motion-reduce:transition-none md:flex-row rounded-md border sm:transition-[width] sm:duration-300 border-subtle h-auto bg-background">
+        className="main-grid bg-default dark:bg-muted grid max-w-full items-start dark:[color-scheme:dark] sm:motion-reduce:transition-none md:flex-row rounded-md border sm:transition-[width] sm:duration-300 border-subtle h-auto bg-background">
         <div className="p-4	 relative z-10 flex flex-col [grid-area:meta] border-b border--bsubtle" style={{height: "auto"}}>
           <h2 className="text-2xl  leading-relaxed"> Free trial - Private lesson</h2>
           <p className="text-xl font-bold  leading-relaxed">Pleasanton</p>
@@ -20,10 +20,10 @@ export default function v() {
             Address: <span className="underline">5870 Stoneridge Dr Suite 6, Pleasanton</span>
           </p>
         </div>
-        <div className="border-r [grid-area:main] md:border--bsubtle ml-[-1px] h-full flex-shrink px-5 py-3 md:border-l lg:w-[var(--booker-main-width)]">
+        <div className="calender-wrapper border-r sm:!border-r-0 [grid-area:main] md:border--bsubtle ml-[-1px] h-full flex-shrink px-2 py-3 md:border-l lg:w-[var(--booker-main-width)]">
           <Calender onDateChange={setDate}/>
         </div>
-        <div className="[grid-area:timeslots] border--bsubtle rtl:border-default flex w-full flex-col px-5 py-3 pb-0 rtl:border-r ltr:md:border-l h-full  md:w-[var(--booker-timeslots-width)]">
+        <div className="[grid-area:timeslots] sm:!border-r-0 border--bsubtle rtl:border-default flex w-full flex-col px-5 py-3 pb-0 rtl:border-r ltr:md:border-l h-full  md:w-[var(--booker-timeslots-width)]">
           <TimeSpots date={date}/>
         </div>
       </div>

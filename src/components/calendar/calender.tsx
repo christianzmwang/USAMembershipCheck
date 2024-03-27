@@ -30,7 +30,7 @@ export default function Calender({
   }
 
   return (
-    <div className="relative flex  h-full">
+    <div className="relative flex  h-full calender ">
       <Calendar
         mode="single"
         required
@@ -41,9 +41,10 @@ export default function Calender({
         showOutsideDays={false}
         disabled={d => !hasSpots(d)}
         fixedWeeks
-        classNames={{
-          cell: "text-center text-sm p-0 relative w-12"
-        }}/>
+        style={{
+          height: "340px"
+        }}
+      />
 
       {loading &&
           <div className="absolute top-0 right-0 bottom-0 left-0 flex justify-center items-center  bg-transparent z-30"
