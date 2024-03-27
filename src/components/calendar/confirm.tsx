@@ -12,19 +12,15 @@ import {
 } from "@/components/ui/dialog"
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "@/components/ui/drawer"
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
-import {atom, useAtom, useSetAtom} from "jotai";
+import {atom, useAtom} from "jotai";
 import {format} from "date-fns-tz";
-import {formatRelative} from "date-fns"
 
 
 export interface ConfirmStatus {
@@ -96,31 +92,32 @@ export function DrawerDialogDemo() {
   )
 }
 
-function ProfileForm({className, showBack}: React.ComponentProps<"form"> & { showBack?: boolean }) {
-  const setStatus = useSetAtom(ConfigStatusAtom)
+function ProfileForm({className}: React.ComponentProps<"form"> & { showBack?: boolean }) {
   return (
     <form className={cn("grid items-start gap-4", className)}>
       <div className="grid gap-2">
         <Label htmlFor="email">Email</Label>
         <Input type="email" id="email" defaultValue="" required/>
       </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor="username">Kid First Name</Label>
-          <Input id="username" defaultValue=""/>
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="username">Kid Last Name</Label>
-          <Input id="username" defaultValue=""/>
-        </div>
+      <div className="grid gap-2">
+        <Label htmlFor="dependent_name">Dependent Name</Label>
+        <Input id="dependent_name" defaultValue=""/>
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="kid_name">Kid Name</Label>
+        <Input id="kid_name" defaultValue="" pattern="\w*\s\w*" required/>
+      </div>
+
+      <div className="grid gap-2">
+        <Label htmlFor="age">Kid Age</Label>
+        <Input type="number" id="age" defaultValue=""/>
       </div>
 
 
       <div className="grid gap-2">
-        <Label htmlFor="username">Phone number</Label>
-        <Input id="username" defaultValue=""/>
+        <Label htmlFor="phone">Phone number</Label>
+        <Input id="phone" type="tel" defaultValue=""/>
       </div>
-
 
 
     </form>
