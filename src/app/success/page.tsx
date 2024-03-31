@@ -3,15 +3,19 @@
 import {Card, CardContent, CardHeader} from "@/components/ui/card";
 import {useSearchParams} from "next/dist/client/components/navigation";
 import {Suspense} from "react";
+import {format} from "date-fns-tz";
 
 function Success() {
   const params = useSearchParams()
-  const date = params.get("date");
-  const time = params.get("time");
+  const datetime = params.get("datetime");
   const location= params.get("location");
-  if (!date || !time) {
+  if (!datetime ) {
     return <div>Invalid URL</div>;
   }
+
+  const date = new Date(datetime)
+  //  "date":format(new Date(data.start_at), 'MMM dd'),
+  //     "time": format(new Date(data.start_at), 'HH:mm'),
 
   return (
     <Card className="mt-6 mx-auto max-w-[20rem] sm:max-w-sm md:max-w-md">
@@ -22,11 +26,11 @@ function Success() {
       <CardContent className="grid gap-4">
         <div className="grid gap-1.5">
           <h3 className="text-sm  tracking-wide  text-gray-500">Date</h3>
-          <p className="font-bold">{date}</p>
+          <p className="font-bold">{format(new Date(datetime), 'MMM dd')}</p>
         </div>
         <div className="grid gap-1.5">
           <h3 className="text-sm  tracking-wide  text-gray-500">Time</h3>
-          <p className="font-bold">{time}</p>
+          <p className="font-bold">{format(new Date(datetime), 'HH:mm')}</p>
         </div>
         <div className="grid gap-1.5">
           <h3 className="text-sm  tracking-wide text-gray-500">Location</h3>

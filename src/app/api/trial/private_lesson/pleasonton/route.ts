@@ -100,8 +100,7 @@ const callPike13 = async (data: z.infer<typeof requestSchema>) => {
 
 
   return new Response(JSON.stringify({"success": true,
-    "date":format(new Date(data.start_at), 'MMM dd'),
-    "time": format(new Date(data.start_at), 'HH:mm'),
+    "datetime": data.start_at,
     "location": "5870 Stoneridge Dr Suite 6, Pleasanton",
   }))
 }

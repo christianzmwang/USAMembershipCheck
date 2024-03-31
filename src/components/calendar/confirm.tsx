@@ -122,7 +122,7 @@ function ProfileForm({className, status, setStatus}: React.ComponentProps<"form"
       if (res.ok) {
         setStatus(null)
         const result = await res.json()
-        router.replace(`/success?date=${result.date}&time=${result.time}&location=${result.location}`)
+        router.replace(`/success?datetime=${result.datetime}&location=${result.location}`)
       }else {
         const result = await res.text()
         toast.error(result ?? "Internal Server Error")
