@@ -32,10 +32,7 @@ export default function Calender({
                                  }: {date?:Date,
   onDateChange: (d?: Date) => void }) {
   const [month, setMonth] = React.useState<Date>(new Date())
-  const pathname = usePathname()
-  const params = useSearchParams()
   const {loading, data} = useDateSpots(month)
-  const router = useRouter()
 
   // useEffect(() => {
   //   const date = params.get("date")
