@@ -71,7 +71,7 @@ export function DrawerDialogDemo() {
 
   return (
     <Drawer open={status != null} onClose={() => setStatus(null)}>
-      <DrawerContent className="max-h-[50%] h-full" >
+      <DrawerContent className="max-h-[90%] h-full" >
         <div className="h-full">
           <DrawerHeader className="text-left pt-0">
             <DrawerTitle>Confirm Your Appointment</DrawerTitle>
