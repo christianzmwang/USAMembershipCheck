@@ -39,7 +39,7 @@ export const useDateSpots = (date: Date) => {
 
 
 
-  }, [date]);
+  }, [cnt, date]);
 
   return {
     loading,
