@@ -21,11 +21,11 @@ import {
 import {Input} from "@/components/ui/input"
 import {atom, useAtom} from "jotai";
 import {format} from "date-fns-tz";
-import {formSchema} from "@/app/api/trial/private_lesson/route";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {z} from "zod";
 
 import useFormPersist from 'react-hook-form-persist'
+import {formSchema} from "@/app/api/trial/private_lesson/types";
 
 export interface ConfirmStatus {
   start_at: string

@@ -3,17 +3,7 @@ import {z} from "zod";
 
 import {NextRequest} from "next/server";
 import {PIKE13} from "@/lib/pike13";
-
-export const formSchema = z.object({
-  email: z.string().email(),
-  parent_name: z.string().regex(/^([a-zA-Z]+\s+)\w+$/, "Full name with a space between"),
-  child_name: z.string().regex(/^([a-zA-Z]+\s+)\w+$/, "Full name with a space between"),
-  child_age: z.coerce.number().int().optional(),
-  phone: z.string().optional(),
-})
-export const requestSchema = formSchema.and(z.object({
-  start_at: z.string(),
-}))
+import {requestSchema} from "@/app/api/trial/private_lesson/types";
 
 const get_name = (full: string) => {
   const [first, ...last] = full.split(" ")
