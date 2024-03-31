@@ -4,23 +4,24 @@ import {z} from "zod";
 import {NextRequest} from "next/server";
 import {PIKE13} from "@/lib/pike13";
 
-interface TrialRequest {
-  email: string,
-  kid_first_name: string,
-  kid_last_name: string,
-  phone: string,
-  start_at: string,
+export const formSchema = z.object({
+  email: z.string().email(),
+  parent_name: z.string().regex(/^([a-zA-Z]+\s+)\w+$/, "Full name with a space between"),
+  child_name: z.string().regex(/^([a-zA-Z]+\s+)\w+$/, "Full name with a space between"),
+  child_age: z.coerce.number().int().optional(),
+  phone: z.string().optional(),
+})
+export const requestSchema = formSchema.and(z.object({
+  start_at: z.string(),
+}))
+
+const get_name = (full: string) => {
+  const [first, ...last] = full.split(" ")
+  return {first, last: last.join(" ")}
 }
 
-const RequestSchema = z.object({
-  email: z.string(),
-  kid_first_name: z.string(),
-  kid_last_name: z.string(),
-  phone: z.string(),
-  start_at: z.string(),
-});
-
-const callPike13 = async (data: TrialRequest) => {
+const callPike13 = async (data: z.infer<typeof requestSchema>) => {
+  const {parent_name, child_name} = data;
   const res = await fetch("https://bayareafencing.pike13.com/api/v2/desk/bookings", {
     method: "POST",
     headers: {
@@ -30,7 +31,7 @@ const callPike13 = async (data: TrialRequest) => {
 
     body: JSON.stringify({
       "booking": {
-        "idempotency_token": "A_STRING_UNIQUE_TO_THIS_BOOKING_2",
+        "idempotency_token": `${data.start_at}-${data.email}`,
         "complete_booking": true,
         "leases": [
           {
@@ -39,8 +40,8 @@ const callPike13 = async (data: TrialRequest) => {
             "location_id": PIKE13.PLEASANTON_LOCATION_ID,
             "start_at": data.start_at,
             "person": {
-              "first_name": data.kid_first_name,
-              "last_name": data.kid_last_name,
+              "first_name": get_name(parent_name).first,
+              "last_name": get_name(parent_name).last,
               "email": data.email,
               "phone": data.phone
             }
@@ -58,7 +59,7 @@ const callPike13 = async (data: TrialRequest) => {
         status: 409,
       })
     }
-    console.error("ERROR! api /api/trial/private_lesson",results)
+    console.error("ERROR! api /api/trial/private_lesson", results)
     return new Response(`register fail, please try again`, {
       status: 403,
     })
@@ -69,7 +70,7 @@ const callPike13 = async (data: TrialRequest) => {
 
 export async function POST(request: NextRequest) {
   const data = await request.json()
-  const result = RequestSchema.safeParse(data);
+  const result = requestSchema.safeParse(data);
   if (!result.success) {
     return new Response(`Request data schema error: ${result.error}`, {
       status: 400,

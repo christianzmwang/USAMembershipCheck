@@ -135,7 +135,6 @@ html {
   .calender {
     justify-content: center;
     align-items: center;
-    zoom: 0.75;
   }
   .smart-scroll {
     overflow-y: clip;
