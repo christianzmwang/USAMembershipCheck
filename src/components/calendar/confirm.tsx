@@ -38,7 +38,7 @@ export const Description = ({status}: { status: ConfirmStatus | null }) => {
   if (!status) {
     return null
   }
-  return <div className="flex gap-4 mt-8">
+  return <div className="flex gap-4 py-4 sm:py-6 border-b border--bsubtle">
     <div className="bg-gray-200 px-4 py-1 rounded font-bold">
       {format(new Date(status.start_at), 'MMM dd, HH:mm', {timeZone: 'America/Los_Angeles'})}
     </div>
@@ -71,15 +71,17 @@ export function DrawerDialogDemo() {
 
   return (
     <Drawer open={status != null} onClose={() => setStatus(null)}>
-      <DrawerContent className="max-h-[50%]">
-        <div className="overflow-auto">
-          <DrawerHeader className="text-left">
+      <DrawerContent className="max-h-[50%] h-full" >
+        <div className="h-full">
+          <DrawerHeader className="text-left pt-0">
             <DrawerTitle>Confirm Your Appointment</DrawerTitle>
             <Description status={status}/>
           </DrawerHeader>
-          <ProfileForm className="px-4" setStatus={setStatus}/>
-
+          <div className="overflow-auto" style={{maxHeight: "calc(100% - 115px)"}}>
+            <ProfileForm className="px-4" setStatus={setStatus}/>
+          </div>
         </div>
+
 
       </DrawerContent>
     </Drawer>
@@ -141,7 +143,7 @@ function ProfileForm({className, setStatus}: React.ComponentProps<"form"> & { se
             )
           })
         }
-        <div className="grid grid-cols-2 gap-4 pb-2">
+        <div className="grid grid-cols-2 gap-4 pb-4">
           <Button disabled={loading} onClick={() => setStatus(null)} variant="outline">Back</Button>
           {
             loading ?
