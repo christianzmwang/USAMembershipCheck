@@ -34,18 +34,6 @@ export default function Calender({
   const [month, setMonth] = React.useState<Date>(new Date())
   const {loading, data} = useDateSpots(month)
 
-  // useEffect(() => {
-  //   const date = params.get("date")
-  //   if (date) {
-  //     onDateChange(new Date(`${date}T00:00:00.000-07:00`))
-  //     setMonth(new Date(`${date}T00:00:00.000-07:00`))
-  //   }else {
-  //     const today = new Date()
-  //     onDateChange(today)
-  //     setMonth(today)
-  //   }
-  // }, []);
-
   const hasSpots = (date: Date) => {
     if (loading) {
       return false
@@ -59,12 +47,6 @@ export default function Calender({
     }
     return false
   }
-
-  const handleDateChange = (d?: Date) => {
-    // router.replace(`${pathname}?date=${d?.toISOString().split("T")[0]}`)
-    onDateChange(d)
-  }
-
 
   const noAvailableInMonth = useMemo(() => {
     if (!data || loading) {
@@ -90,7 +72,7 @@ export default function Calender({
         selected={date}
         month={month}
         fromDate={new Date()}
-        onSelect={handleDateChange}
+        onSelect={onDateChange}
         onMonthChange={setMonth}
         showOutsideDays={false}
         disabled={d => !hasSpots(d)}

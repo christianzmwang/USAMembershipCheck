@@ -37,9 +37,8 @@ export const useDateSpots = (date: Date) => {
       return prev + 1
     })
 
-
-
-  }, [cnt, date]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date]);
 
   return {
     loading,
