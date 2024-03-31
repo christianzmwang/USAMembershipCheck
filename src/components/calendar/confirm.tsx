@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import {useForm} from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod"
@@ -26,6 +28,8 @@ import {z} from "zod";
 
 import useFormPersist from 'react-hook-form-persist'
 import {formSchema} from "@/app/api/trial/private_lesson/types";
+import {toast} from "sonner";
+import {useRouter} from "next/navigation";
 
 export interface ConfirmStatus {
   start_at: string
@@ -52,25 +56,29 @@ export const Description = ({status}: { status: ConfirmStatus | null }) => {
 export function DrawerDialogDemo() {
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const [status, setStatus] = useAtom(ConfigStatusAtom)
+  if (!status) {
+    return null
+  }
 
   if (isDesktop) {
     return (
-      <Dialog open={!!status} onOpenChange={() => setStatus(null)}>
+      <Dialog open onOpenChange={() => setStatus(null)}>
 
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Confirm Your Appointment</DialogTitle>
+            <Description status={status}/>
+
           </DialogHeader>
-          <ProfileForm setStatus={setStatus}/>
+          <ProfileForm setStatus={setStatus} status={status}/>
 
         </DialogContent>
       </Dialog>
     )
   }
 
-
   return (
-    <Drawer open={status != null} onClose={() => setStatus(null)}>
+    <Drawer open onClose={() => setStatus(null)}>
       <DrawerContent className="max-h-[90%] h-full" >
         <div className="h-full">
           <DrawerHeader className="text-left pt-0">
@@ -78,18 +86,17 @@ export function DrawerDialogDemo() {
             <Description status={status}/>
           </DrawerHeader>
           <div className="overflow-auto" style={{maxHeight: "calc(100% - 115px)"}}>
-            <ProfileForm className="px-4" setStatus={setStatus}/>
+            <ProfileForm className="px-4" status={status} setStatus={setStatus}/>
           </div>
         </div>
-
-
       </DrawerContent>
     </Drawer>
   )
 }
 
-function ProfileForm({className, setStatus}: React.ComponentProps<"form"> & { setStatus: (v: any) => void }) {
+function ProfileForm({className, status, setStatus}: React.ComponentProps<"form"> & { status: ConfirmStatus ,setStatus: (v: any) => void }) {
   const [loading, setLoading] = React.useState(false)
+  const router = useRouter()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
@@ -100,8 +107,29 @@ function ProfileForm({className, setStatus}: React.ComponentProps<"form"> & { se
     storage: window.localStorage,
   });
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log("onSubmit", data)
-    setLoading(true)
+    const fn = async () => {
+      setLoading(true)
+      const res = await fetch("/api/trial/private_lesson/pleasonton", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          ...data,
+          start_at: status?.start_at
+        })
+      })
+      if (res.ok) {
+        setStatus(null)
+        const result = await res.json()
+        router.replace(`/success?date=${result.date}&time=${result.time}&location=${result.location}`)
+      }else {
+        const result = await res.text()
+        toast.error(result ?? "Internal Server Error")
+        setLoading(false)
+      }
+    }
+   fn()
   }
   const fields: {
     name: keyof z.infer<typeof formSchema>
@@ -118,7 +146,7 @@ function ProfileForm({className, setStatus}: React.ComponentProps<"form"> & { se
 
   return (
     <Form {...form} >
-      <form className={cn("grid items-start gap-4", className)} onSubmit={form.handleSubmit(data => console.log("!", data))}>
+      <form className={cn("grid items-start gap-4", className)} onSubmit={form.handleSubmit(onSubmit)}>
         {
           fields.map(({name, type, placeholder}) => {
             return (

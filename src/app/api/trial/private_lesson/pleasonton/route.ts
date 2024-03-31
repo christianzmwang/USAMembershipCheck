@@ -4,11 +4,38 @@ import {z} from "zod";
 import {NextRequest} from "next/server";
 import {PIKE13} from "@/lib/pike13";
 import {requestSchema} from "@/app/api/trial/private_lesson/types";
+import {format} from "date-fns-tz";
 
 const get_name = (full: string) => {
   const [first, ...last] = full.split(" ")
   return {first, last: last.join(" ")}
 }
+// /api/v2/desk/people/:person_id/notes
+
+const createNote = async (part: string, note: string) => {
+  const res = await fetch(`https://bayareafencing.pike13.com/api/v2/desk/${part}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.PIKE13_API_KEY}`
+    },
+    body: JSON.stringify({
+      "note": {
+        note,
+        public: false,
+        pinned: false,
+        send_notifications: false
+      }
+    }),
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    console.error(`Error Call /api/v2/desk/${part}, code ${res.status}, error:${text}`)
+  }
+  return true
+}
+
 
 const callPike13 = async (data: z.infer<typeof requestSchema>) => {
   const {parent_name, child_name} = data;
@@ -54,7 +81,29 @@ const callPike13 = async (data: z.infer<typeof requestSchema>) => {
       status: 403,
     })
   }
-  return new Response(JSON.stringify({"success": true, results}))
+
+
+  const note = {
+    "parent_name": parent_name,
+    "child_name": child_name,
+    "child_age": data.child_age,
+    "phone": data.phone,
+    "email": data.email,
+    "schema": "0.0.1",
+  }
+
+  const lease = results["bookings"][0]["leases"][0]
+
+  await createNote(`/people/${lease.person.id}/notes`, JSON.stringify(note))
+  await createNote(`/event_occurrences/${lease.event_occurrence_id}/notes`, JSON.stringify(note))
+
+
+
+  return new Response(JSON.stringify({"success": true,
+    "date":format(new Date(data.start_at), 'MMM dd', {timeZone: 'America/Los_Angeles'}),
+    "time": format(new Date(data.start_at), 'HH:mm', {timeZone: 'America/Los_Angeles'}),
+    "location": "5870 Stoneridge Dr Suite 6, Pleasanton",
+  }))
 }
 
 
@@ -67,6 +116,12 @@ export async function POST(request: NextRequest) {
     })
   }
 
-  return callPike13(result.data)
+  try {
+    return callPike13(result.data)
+  } catch (e) {
+    return new Response(`Internal server error.`, {
+      status: 500,
+    })
+  }
 
 }

@@ -21,7 +21,7 @@ export default function v() {
           </p>
         </div>
         <div className="calender-wrapper  [grid-area:main] md:border--bsubtle ml-[-1px] h-full flex-shrink px-2 py-3 md:border-r lg:w-[var(--booker-main-width)]">
-          <Calender onDateChange={setDate}/>
+          <Calender date={date} onDateChange={setDate}/>
         </div>
         <div className="[grid-area:timeslots]  border--bsubtle flex w-full flex-col px-5 py-3 pb-0 h-full  md:w-[var(--booker-timeslots-width)]">
           <TimeSpots date={date}/>
