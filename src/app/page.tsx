@@ -16,7 +16,7 @@ export default function v() {
           <h2 className="text-2xl  leading-relaxed"> Free trial - Private lesson</h2>
           <p className="text-xl font-bold  leading-relaxed">Pleasanton</p>
           <p className="text-sm  leading-relaxed">
-            Book a free trial lesson with a private tutor<br/>
+            Book a free trial class with us!<br/>
             Address: <span className="underline">5870 Stoneridge Dr Suite 6, Pleasanton</span>
           </p>
         </div>
