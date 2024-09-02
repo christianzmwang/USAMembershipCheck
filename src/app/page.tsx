@@ -6,7 +6,7 @@ import {TimeSpots} from "@/components/calendar/time-spots";
 
 // <p className="text-xl font-bold  leading-relaxed">Pleasanton</p>
 
-export default function v() {
+export default function MainComponent() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [date, setDate] = useState<Date | undefined>(new Date())
 
