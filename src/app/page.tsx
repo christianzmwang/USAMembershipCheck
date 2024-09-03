@@ -15,7 +15,7 @@ export default function MainComponent() {
     { id: "los-gatos", name: "Los Gatos", address: "15445 Los Gatos Blvd, Los Gatos"}
   ];
 
-  const [location, setLocation] = useState("los-gatos");
+  const [location, setLocation] = useState("Los Gatos");
 
   const selectedLocation = locations.find(loc => loc.name === location);
 
@@ -30,7 +30,7 @@ export default function MainComponent() {
         className="main-grid bg-default dark:bg-muted grid max-w-full items-start dark:[color-scheme:dark] sm:motion-reduce:transition-none md:flex-row rounded-md  sm:transition-[width] sm:duration-300 h-auto bg-background">
         <div className="p-4	 relative z-10 flex flex-col [grid-area:meta] border-b border--bsubtle" style={{height: "auto"}}>
           <h2 className="text-2xl  leading-relaxed"> Free Introductory Class </h2>
-          <div className="mb-2 mt-2">
+          <div className="mt-2">
             <div style={{ height: "auto" }} className="main-grid bg-default dark:bg-muted grid max-w-full items-start dark:[color-scheme:dark] sm:motion-reduce">
               <div className="mb-4">
                 <label htmlFor="location" className="block text-sm font-medium text-gray-700">
