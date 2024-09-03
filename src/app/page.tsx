@@ -1,7 +1,7 @@
 "use client"
 
 import Calender from "@/components/calendar/calender";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {TimeSpots} from "@/components/calendar/time-spots";
 
 // <p className="text-xl font-bold  leading-relaxed">Pleasanton</p>
@@ -10,13 +10,14 @@ export default function MainComponent() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [date, setDate] = useState<Date | undefined>(new Date())
 
-  // Add the state for location
-  const [location, setLocation] = useState("Los-Gatos");
-
   const locations = [
     { id: "pleasanton", name: "Pleasanton", address: "5870 Stoneridge Dr Suite 6, Pleasanton"},
     { id: "los-gatos", name: "Los Gatos", address: "15445 Los Gatos Blvd, Los Gatos"}
   ];
+
+  const [location, setLocation] = useState("los-gatos");
+
+  const selectedLocation = locations.find(loc => loc.name === location);
 
   const handleLocationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLocation(event.target.value);
@@ -52,8 +53,8 @@ export default function MainComponent() {
             </div>
           </div>
           <p className="text-sm  leading-relaxed">
-            Book a free trial class with us!<br/>
-            Address: <span className="underline">5870 Stoneridge Dr Suite 6, Pleasanton</span>
+            Book a free introductory class with us!<br/>
+            Address: <span className="underline">{selectedLocation?.address}</span>
           </p>
         </div>
         <div className="calender-wrapper  [grid-area:main] md:border--bsubtle ml-[-1px] h-full flex-shrink px-2 py-3 md:border-r lg:w-[var(--booker-main-width)]">
