@@ -44,8 +44,15 @@ export default function DonutChart({
     return { ...d, dasharray, dashoffset }
   })
 
+  // Inner ring overlays the Verified split (Rightly/Wrong) and is scaled to the
+  // Verified segment of the outer ring to ensure it never exceeds it.
   const innerDenom = Math.max(1, totals.verified)
-  function innerArcLen(v: number) { return (v / innerDenom) * circumference }
+  // Compute the length and starting offset of the Verified segment on the outer ring
+  const outerVerifiedLen = (outerVerified / outerTotal) * circumference
+  const outerVerifiedOffset = -0 // initialize fallback
+  const verifiedSegment = outerData.find(d => d.key === 'verified')
+  const innerBaseOffset = verifiedSegment?.dashoffset ?? outerVerifiedOffset
+
   let innerCum = 0
   const innerStroke = Math.max(8, Math.floor(stroke * 0.6))
   const showInner = totals.verified > 0 && (totals.rightly > 0 || totals.wrong > 0)
@@ -53,8 +60,9 @@ export default function DonutChart({
     { key: 'rightly' as const, label: 'Rightly registered', value: Math.max(0, totals.rightly), color: colors.rightly },
     { key: 'wrong' as const, label: 'Wrong ID but verified', value: Math.max(0, totals.wrong), color: colors.wrong },
   ].map(d => {
-    const dasharray = `${innerArcLen(d.value)} ${circumference}`
-    const dashoffset = - (innerCum / innerDenom) * circumference
+    const segLen = (d.value / innerDenom) * outerVerifiedLen
+    const dasharray = `${segLen} ${circumference}`
+    const dashoffset = innerBaseOffset - (innerCum / innerDenom) * outerVerifiedLen
     innerCum += d.value
     return { ...d, dasharray, dashoffset }
   })
@@ -97,7 +105,7 @@ export default function DonutChart({
               strokeDasharray={s.dasharray}
               strokeDashoffset={s.dashoffset}
               strokeLinecap="butt"
-              style={{ cursor: 'pointer', opacity: category && category !== s.key ? 0.5 : 1 }}
+              style={{ cursor: 'pointer', opacity: category && category !== s.key ? 0.45 : 0.9 }}
               onClick={() => onCategoryChange(category === s.key ? null : s.key)}
               transform={`rotate(-90 ${center} ${center})`}
             />

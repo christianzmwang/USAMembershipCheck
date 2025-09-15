@@ -1,6 +1,2 @@
-import { redirect } from "next/navigation"
-
-export default function Page() {
-  // Make homepage redirect to USA Members dashboard
-  redirect('/usa-members')
-}
+export { default } from './usa-members/page'
+export { dynamic } from './usa-members/page'

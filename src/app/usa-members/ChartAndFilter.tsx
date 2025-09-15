@@ -77,9 +77,9 @@ export default function ChartAndFilter({
   // Prepare labels for tiles/legend
   const tiles = [
     { key: 'verified' as const, label: 'Verified', value: totals.verified, color: colors.verified },
+    { key: 'invalid' as const, label: 'Invalid numbers', value: totals.invalid, color: colors.invalid },
     { key: 'rightly' as const, label: 'Pike13 USA ID matches Verified USA ID', value: totals.rightly, color: colors.rightly },
     { key: 'wrong' as const, label: 'Verified USA ID but incorrect Pike13 USA ID', value: totals.wrong, color: colors.wrong },
-    { key: 'invalid' as const, label: 'Invalid numbers', value: totals.invalid, color: colors.invalid },
   ]
 
   // Donut config (avoid clipping by adding a margin to the canvas)
@@ -106,9 +106,14 @@ export default function ChartAndFilter({
     return { ...d, dasharray, dashoffset }
   })
 
-  // Inner ring overlays the split of Verified: Rightly vs Wrong, using totals.verified as the denominator
+  // Inner ring overlays the split of Verified: Rightly vs Wrong, scaled to the Verified outer segment length
+  // This ensures inner segments never exceed the Verified outer arc and align with it.
   const innerDenom = Math.max(1, totals.verified)
-  function innerArcLen(v: number) { return (v / innerDenom) * circumference }
+  // Length of the Verified portion on the outer ring
+  const outerVerifiedSegment = outerData.find(d => d.key === 'verified')
+  const outerVerifiedLen = outerVerifiedSegment ? (outerVerified / outerTotal) * circumference : 0
+  // Starting offset of the Verified outer segment (align inner ring to this)
+  const outerVerifiedOffset = outerVerifiedSegment?.dashoffset ?? 0
   let innerCum = 0
   const innerStroke = Math.max(8, Math.floor(stroke * 0.6))
   const showInner = totals.verified > 0 && (totals.rightly > 0 || totals.wrong > 0)
@@ -116,8 +121,9 @@ export default function ChartAndFilter({
     { key: 'rightly' as const, label: 'Rightly registered', value: Math.max(0, totals.rightly), color: colors.rightly },
     { key: 'wrong' as const, label: 'Wrong ID but verified', value: Math.max(0, totals.wrong), color: colors.wrong },
   ].map(d => {
-    const dasharray = `${innerArcLen(d.value)} ${circumference}`
-    const dashoffset = - (innerCum / innerDenom) * circumference
+    const segLen = (d.value / innerDenom) * outerVerifiedLen
+    const dasharray = `${segLen} ${circumference}`
+    const dashoffset = outerVerifiedOffset - (innerCum / innerDenom) * outerVerifiedLen
     innerCum += d.value
     return { ...d, dasharray, dashoffset }
   })

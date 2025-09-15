@@ -11,6 +11,14 @@
 				"$tsc"
 			],
 			"group": "build"
+		},
+		{
+			"label": "Next.js Dev Server",
+			"type": "shell",
+			"command": "pnpm dev",
+			"args": [],
+			"isBackground": true,
+			"group": "build"
 		}
 	]
 }
