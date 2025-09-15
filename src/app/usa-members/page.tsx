@@ -4,6 +4,10 @@ import path from "node:path"
 import Link from "next/link"
 import ChartAndFilter from "./ChartAndFilter"
 import USAStatsClient from "./USAStatsClient"
+import NextDynamic from "next/dynamic"
+import { getLastUpdated } from "@/lib/storage-outputs"
+
+const RefreshControls = NextDynamic(() => import('./RefreshControls'), { ssr: false })
 
 export const dynamic = "force-dynamic"
 
@@ -62,6 +66,17 @@ export default async function Page({ searchParams }: { searchParams?: { page?: s
       usingPartialVerify = true
     }
   } catch {}
+
+  // On Vercel (or if no local files), use S3-backed last-updated to decide if verification exists
+  if (!verifyResults.length) {
+    try {
+      const { lastVerifyRunAt } = await getLastUpdated()
+      // If we have a lastVerifyRunAt but no local file, inform UI that verification exists but results aren't loaded.
+      if (lastVerifyRunAt) {
+        usingPartialVerify = false
+      }
+    } catch {}
+  }
 
   // Fallback to live API if no cache is present and API key available
   if (!people.length && apiKey) {
@@ -123,6 +138,7 @@ export default async function Page({ searchParams }: { searchParams?: { page?: s
 
   return (
     <div className="p-6 space-y-4">
+      <RefreshControls />
 
       {(fs.existsSync(verifyPath) || fs.existsSync(verifyPartialPath)) ? (
         <USAStatsClient
