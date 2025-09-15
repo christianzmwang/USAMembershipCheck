@@ -95,7 +95,8 @@ export async function getPeopleUSAMembersPage(
   fieldName?: string,
 ): Promise<USAProfile[]> {
   const people = await fetchPeoplePage(apiKey, page, perPage)
-  const chosenName = fieldName || "USA Fencing Member ID"
+  // Default USA member field name is hardcoded; no env required
+  const chosenName = fieldName || "USA Fencing Membership number"
   // Light progress log on server
   console.log(`[pike13] fetched page ${page} size ${people.length}`)
 
@@ -419,11 +420,11 @@ export async function resolveCustomFieldIdByName(apiKey: string, displayName: st
 
 /**
  * Fetches all people and returns mapping of person_id to USA member id (custom field).
- * Customize field name via env PIKE13_USA_MEMBER_FIELD_NAME or defaults to 'USA Fencing Member ID'.
+ * Default field name is hardcoded to 'USA Fencing Membership number'.
  */
 export async function getAllPeopleUSAMembers(params: { apiKey: string; fieldName?: string }): Promise<USAProfile[]> {
   const { apiKey } = params
-  const fieldName = params.fieldName || "USA Fencing Member ID"
+  const fieldName = params.fieldName || "USA Fencing Membership number"
 
   const results: USAProfile[] = []
   let page = 1

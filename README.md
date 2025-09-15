@@ -145,12 +145,10 @@ Environment variables in `.env.local`:
 
 ```
 PIKE13_API_KEY=your_admin_api_key
-# Optional: override the custom field display name
-PIKE13_USA_MEMBER_FIELD_NAME="USA Fencing Member ID"
 ```
 
 Notes:
-- Ensure your Pike13 account has a Person custom field named the same as `PIKE13_USA_MEMBER_FIELD_NAME`.
+- Ensure your Pike13 account has a Person custom field named "USA Fencing Membership number" (hardcoded default used across the app and scripts).
 - If the field is missing for a person, the table shows “—”.
 
 ## Verify USA Membership IDs (automation)
@@ -160,10 +158,9 @@ A helper script logs into the USA Fencing member portal and checks your Pike13 m
 Setup:
 
 1. Copy `.env.local.example` to `.env.local` and fill in:
-   - `USA_FENCING_EMAIL`
-   - `USA_FENCING_PASSWORD`
-   - `PIKE13_API_KEY`
-   - optionally `PIKE13_USA_MEMBER_FIELD_NAME` (default: `USA Fencing Member ID`)
+  - `USA_FENCING_EMAIL`
+  - `USA_FENCING_PASSWORD`
+  - `PIKE13_API_KEY`
 2. Install browser deps:
    - `pnpm install`
    - `pnpm playwright:install`
@@ -189,7 +186,7 @@ USA_VERIFIER_CONCURRENCY=2
 # Default retry count if --retry isn’t provided
 USA_VERIFIER_RETRY=2
 # Optional: narrow club matching when falling back to name search (comma or pipe separated)
-USA_EXPECTED_CLUBS="Bay Area Fencing|Bay Area Fencing Club|Bay Area Fencing Center"
+USA_EXPECTED_CLUBS is no longer required; script defaults to ["Bay Area Fencing Club"].
 ```
 
 Notes:

@@ -9,7 +9,8 @@ export async function GET() {
     if (!apiKey) {
       return NextResponse.json({ error: "Missing PIKE13_API_KEY" }, { status: 500 })
     }
-    const fieldName = process.env.PIKE13_USA_MEMBER_FIELD_NAME || "USA Fencing Member ID"
+  // Use hardcoded default for USA member field name
+  const fieldName = "USA Fencing Membership number"
 
     const data = await getAllPeopleUSAMembers({ apiKey, fieldName })
     // Optionally filter out nulls if only those with IDs are desired; keep all for visibility.

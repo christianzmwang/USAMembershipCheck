@@ -41,7 +41,7 @@ function arg(name: string, def?: string) {
 
 async function main() {
   const apiKey = requireEnv('PIKE13_API_KEY')
-  const fieldName = process.env.PIKE13_USA_MEMBER_FIELD_NAME || 'USA Fencing Member ID'
+  const fieldName = 'USA Fencing Membership number'
   const outPath = arg('--out', 'out/usa-members.json')!
   fs.mkdirSync(path.dirname(outPath), { recursive: true })
 

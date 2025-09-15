@@ -295,17 +295,11 @@ function sanitizeUsaId(raw: string | number | null | undefined): string {
   return String(raw).replace(/\D+/g, '')
 }
 
-// Utility: validate ID length using env or defaults
+// Utility: validate ID length using hardcoded policy (allowed lengths = 9)
 function isAllowedUsaIdLength(id: string): boolean {
   if (!id) return false
-  const envList = process.env.USA_ID_ALLOWED_LENGTHS
-  if (envList && /\d/.test(envList)) {
-    const allowed = envList.split(',').map(s => Number(s.trim())).filter(n => Number.isFinite(n) && n > 0)
-    if (allowed.length) return allowed.includes(id.length)
-  }
-  const minLen = Number(process.env.USA_ID_MIN_LEN || '8')
-  const maxLen = Number(process.env.USA_ID_MAX_LEN || '9')
-  return id.length >= minLen && id.length <= maxLen
+  // Only accept exactly 9 digits per requirement
+  return id.length === 9
 }
 
 // Try to extract a plausible USA member id from arbitrary text
@@ -313,15 +307,9 @@ function extractUsaIdFromText(text: string): string | null {
   if (!text) return null
   const candidates = text.match(/\d{4,}/g) || []
   if (!candidates.length) return null
-  const envList = process.env.USA_ID_ALLOWED_LENGTHS
-  let allowed: number[] | null = null
-  if (envList && /\d/.test(envList)) {
-    allowed = envList.split(',').map(s => Number(s.trim())).filter(n => Number.isFinite(n) && n > 0)
-  }
-  const minLen = Number(process.env.USA_ID_MIN_LEN || '8')
-  const maxLen = Number(process.env.USA_ID_MAX_LEN || '9')
+  // Only return candidates with exactly 9 digits
   for (const d of candidates) {
-    if (allowed ? allowed.includes(d.length) : (d.length >= minLen && d.length <= maxLen)) return d
+    if (d.length === 9) return d
   }
   return null
 }
@@ -476,7 +464,8 @@ function toCsvCell(s: any): string {
 async function main() {
   const email = requireEnv('USA_FENCING_EMAIL')
   const password = requireEnv('USA_FENCING_PASSWORD')
-  const fieldName = process.env.PIKE13_USA_MEMBER_FIELD_NAME || 'USA Fencing Member ID'
+  // Hardcoded Pike13 field name (no env required)
+  const fieldName = 'USA Fencing Membership number'
 
   const limit = Number(arg('--limit', '0')!)
   const concurrency = Math.max(1, Number(arg('--concurrency', process.env.USA_VERIFIER_CONCURRENCY || '1')!))
@@ -682,10 +671,8 @@ async function main() {
 
   let i = 0
   // Prepare expected club filters from env
-  const clubEnv = process.env.USA_EXPECTED_CLUBS || process.env.USA_EXPECTED_CLUB || ''
-  const expectedClubs = clubEnv
-    ? clubEnv.split(/[|,]/).map(s => s.trim()).filter(Boolean)
-    : ['Bay Area Fencing', 'Bay Area Fencing Club', 'Bay Area Fencing Center']
+  // Hardcoded expected club(s)
+  const expectedClubs = ['Bay Area Fencing Club']
 
   // Shared index for work distribution
   let nextIndex = 0
